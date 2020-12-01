@@ -1,13 +1,28 @@
 <template>
-  <entity-item-box
-    v-if="isReady"
-    :labels="items"
-    :text="currentDoc.text"
-    :entities="currentDoc.annotations"
-    :delete-annotation="removeEntity"
-    :update-entity="updateEntity"
-    :add-entity="addEntity"
-  />
+  <div>
+    <div class="hl-checkbox">
+      <v-btn
+        small
+        color="primary"
+        dark
+        @click="refreshEntityItemBox"
+      >
+      Remove Highlights
+      </v-btn>
+    </div>
+    <div class="clearfix"></div>
+    <entity-item-box
+      v-if="isReady"
+      :key="refreshCount"
+      :labels="items"
+      :text="currentDoc.text"
+      :entities="currentDoc.annotations"
+      :delete-annotation="removeEntity"
+      :update-entity="updateEntity"
+      :add-entity="addEntity"
+      :refresh-entity-item-box="refreshEntityItemBox"
+    />
+  </div>
 </template>
 
 <script>
@@ -17,6 +32,12 @@ import EntityItemBox from '~/components/organisms/annotation/EntityItemBox'
 export default {
   components: {
     EntityItemBox
+  },
+
+  data() {
+    return {
+      refreshCount: 0
+    }
   },
 
   computed: {
@@ -43,6 +64,7 @@ export default {
         projectId: this.$route.params.id
       }
       this.deleteAnnotation(payload)
+      this.refreshEntityItemBox()
     },
     updateEntity(labelId, annotationId) {
       const payload = {
@@ -60,7 +82,20 @@ export default {
         projectId: this.$route.params.id
       }
       this.addAnnotation(payload)
+    },
+    refreshEntityItemBox() {
+      this.refreshCount = this.refreshCount + 1
     }
   }
 }
 </script>
+<style scoped>
+.hl-checkbox {
+  margin-bottom: 15px;
+  font-size: 14px;
+  float: right;
+}
+.clearfix {
+  clear: both;
+}
+</style>

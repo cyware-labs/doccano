@@ -80,6 +80,11 @@ export default {
       type: Function,
       default: () => ([]),
       required: true
+    },
+    refreshEntityItemBox: {
+      type: Function,
+      default: () => ([]),
+      required: true
     }
   },
   data() {
@@ -88,14 +93,14 @@ export default {
       x: 0,
       y: 0,
       start: 0,
-      end: 0
+      end: 0,
+      selectedText: null
     }
   },
   computed: {
     sortedEntities() {
       return this.entities.slice().sort((a, b) => a.start_offset - b.start_offset)
     },
-
     chunks() {
       let chunks = []
       const entities = this.sortedEntities
@@ -174,12 +179,24 @@ export default {
       if (selection.rangeCount <= 0) {
         return
       }
+      this.selectedText = selection.toString()
       const range = selection.getRangeAt(0)
       const preSelectionRange = range.cloneRange()
       preSelectionRange.selectNodeContents(this.$el)
       preSelectionRange.setEnd(range.startContainer, range.startOffset)
       this.start = [...preSelectionRange.toString()].length
       this.end = this.start + [...range.toString()].length
+    },
+    highlightAlltext() {
+      if (!this.selectedText) { return }
+      const allText = document.querySelectorAll('.highlight-container span')
+      const regex = new RegExp(this.selectedText, 'gi')
+      allText.forEach((el) => {
+        if (!el.innerHTML || el.className === 'highlight bottom' || el.className === 'highlight__label' || el.className === 'highlight__content') {
+          return
+        }
+        el.innerHTML = el.textContent.replace(regex, `<span class="hl-items" style="background-color: #FFFF00">${this.selectedText}</span>`)
+      })
     },
     validateSpan() {
       if ((typeof this.start === 'undefined') || (typeof this.end === 'undefined')) {
@@ -213,6 +230,10 @@ export default {
         this.showMenu = false
         this.start = 0
         this.end = 0
+        this.refreshEntityItemBox()
+        setTimeout(() => {
+          this.highlightAlltext()
+        }, 100)
       }
     }
   }
