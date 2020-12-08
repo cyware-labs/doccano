@@ -5,12 +5,12 @@
         small
         color="primary"
         dark
-        @click="refreshEntityItemBox"
+        @click="refreshEntityItemBox(() => {})"
       >
-      Remove Highlights
+        Remove Highlights
       </v-btn>
     </div>
-    <div class="clearfix"></div>
+    <div class="clearfix" />
     <entity-item-box
       v-if="isReady"
       :key="refreshCount"
@@ -45,6 +45,7 @@ export default {
     ...mapState('documents', { documentLoading: 'loading' }),
     ...mapGetters('documents', ['currentDoc']),
     isReady() {
+      this.refreshEntityItemBox(() => {})
       return !!this.currentDoc && !this.loading && !this.documentLoading
     }
   },
@@ -64,7 +65,7 @@ export default {
         projectId: this.$route.params.id
       }
       this.deleteAnnotation(payload)
-      this.refreshEntityItemBox()
+      this.refreshEntityItemBox(() => {})
     },
     updateEntity(labelId, annotationId) {
       const payload = {
@@ -83,8 +84,9 @@ export default {
       }
       this.addAnnotation(payload)
     },
-    refreshEntityItemBox() {
+    refreshEntityItemBox(_callback) {
       this.refreshCount = this.refreshCount + 1
+      _callback()
     }
   }
 }

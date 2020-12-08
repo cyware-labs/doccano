@@ -230,10 +230,11 @@ export default {
         this.showMenu = false
         this.start = 0
         this.end = 0
-        this.refreshEntityItemBox()
-        setTimeout(() => {
-          this.highlightAlltext()
-        }, 100)
+        this.refreshEntityItemBox(() => {
+          setTimeout(() => {
+            this.highlightAlltext()
+          }, 100)
+        })
       }
     }
   }
