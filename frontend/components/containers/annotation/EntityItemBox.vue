@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div class="hl-checkbox">
+    <div class="hl-checkbox d-flex">
+      <v-switch
+        class="mt-0 mr-3"
+        v-model="isHighlight"
+        label="Switch Highlight Mode"
+      ></v-switch>
       <v-btn
         small
         color="primary"
@@ -21,6 +26,7 @@
       :update-entity="updateEntity"
       :add-entity="addEntity"
       :refresh-entity-item-box="refreshEntityItemBox"
+      :is-highlight="isHighlight"
     />
   </div>
 </template>
@@ -36,7 +42,8 @@ export default {
 
   data() {
     return {
-      refreshCount: 0
+      refreshCount: 0,
+      isHighlight: false
     }
   },
 
